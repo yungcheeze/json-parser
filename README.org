@@ -1,0 +1,3 @@
+#+TITLE: JSON Parser
+
+JSON Parser from scratch inspired by tsoding's [[https://youtu.be/N9RUqGYuGfw][youtube tutorial]]

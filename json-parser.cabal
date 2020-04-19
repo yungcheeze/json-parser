@@ -1,0 +1,63 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: aa49db85588b6e31c0bdb98f002790f2a2569526e164fab7d83286b22e724a65
+
+name:           json-parser
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/json-parser#readme>
+homepage:       https://github.com/githubuser/json-parser#readme
+bug-reports:    https://github.com/githubuser/json-parser/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+build-type:     Simple
+extra-source-files:
+    README.org
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/json-parser
+
+library
+  exposed-modules:
+      JsonParser
+  other-modules:
+      Paths_json_parser
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable json-parser-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_json_parser
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , json-parser
+  default-language: Haskell2010
+
+test-suite json-parser-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      JsonParserSpec
+      Paths_json_parser
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+    , hspec-discover
+    , json-parser
+  default-language: Haskell2010

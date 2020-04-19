@@ -1,0 +1,8 @@
+cradle:
+  stack:
+    - path: ./test
+      component: "json-parser:test:json-parser-test"
+    - path: ./src
+      component: "json-parser:lib"
+    - path: ./app
+      component: "json-parser:exe:json-parser-exe"
