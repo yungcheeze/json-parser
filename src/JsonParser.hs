@@ -1,6 +1,11 @@
 -- |
 
-module JsonParser where
+module JsonParser
+  ( charP
+  , Parser(runParser)
+  )
+where
+
 data JsonValue
   = JsonNull
   | JsonNumber Int
@@ -32,3 +37,9 @@ jsonList = undefined
 jsonObject :: Parser JsonValue
 jsonObject = undefined
 
+charP :: Char -> Parser Char
+charP = Parser . runCharP
+ where
+  runCharP :: Char -> String -> Maybe (String, Char)
+  runCharP c (x : xs) | x == c = Just (xs, c)
+  runCharP _ _                 = Nothing
