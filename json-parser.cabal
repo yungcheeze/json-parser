@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: aa49db85588b6e31c0bdb98f002790f2a2569526e164fab7d83286b22e724a65
+-- hash: df558b32cfa1511cc0722c555b1f88b811c40566bac3c783bd5d025b451bce58
 
 name:           json-parser
 version:        0.1.0.0
@@ -56,7 +56,8 @@ test-suite json-parser-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , hspec
     , hspec-discover
     , json-parser

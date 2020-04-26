@@ -47,3 +47,4 @@ tests:
     - json-parser
     - hspec
     - hspec-discover
+    - QuickCheck
