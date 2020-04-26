@@ -19,6 +19,13 @@ newtype Parser a = Parser
   { runParser :: String -> Maybe (String, a)
   }
 
+instance Functor Parser where
+  fmap = undefined
+
+instance Applicative Parser where
+  pure t = undefined
+  (<*>) = undefined
+
 jsonValue :: Parser JsonValue
 jsonValue = undefined
 
@@ -43,3 +50,6 @@ charP = Parser . runCharP
   runCharP :: Char -> String -> Maybe (String, Char)
   runCharP c (x : xs) | x == c = Just (xs, c)
   runCharP _ _                 = Nothing
+
+stringP :: String -> Parser String
+stringP = traverse charP
