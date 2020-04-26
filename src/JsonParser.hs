@@ -20,7 +20,10 @@ newtype Parser a = Parser
   }
 
 instance Functor Parser where
-  fmap = undefined
+  fmap f (Parser p) = Parser $ \input ->
+    case p input of
+      Just (xs, a) -> Just (xs, f a)
+      Nothing -> Nothing
 
 instance Applicative Parser where
   pure t = undefined
