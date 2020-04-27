@@ -5,7 +5,7 @@ module JsonParser
   , Parser(runParser)
   )
 where
-
+import Data.Bifunctor (second)
 data JsonValue
   = JsonNull
   | JsonNumber Int
@@ -21,9 +21,7 @@ newtype Parser a = Parser
 
 instance Functor Parser where
   fmap f (Parser p) = Parser $ \input ->
-    case p input of
-      Just (xs, a) -> Just (xs, f a)
-      Nothing -> Nothing
+    fmap (second f) (p input)
 
 instance Applicative Parser where
   pure t = undefined
