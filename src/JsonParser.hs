@@ -20,8 +20,7 @@ newtype Parser a = Parser
   }
 
 instance Functor Parser where
-  fmap f (Parser p) = Parser $ \input ->
-    fmap (second f) (p input)
+  fmap f (Parser p) = Parser $ fmap (second f) . p
 
 instance Applicative Parser where
   pure t = undefined
