@@ -2,6 +2,7 @@
 
 module JsonParser
   ( charP
+  , stringP
   , Parser(runParser)
   )
 where

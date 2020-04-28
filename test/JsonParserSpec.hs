@@ -36,7 +36,10 @@ spec = do
       property (applicativeLaw4 ord 'x')
     it "u <*> pure y = pure ($ y) <*> u" $
       property (applicativeLaw5 (pure ord) 'x')
-
+  describe "stringP" $ do
+    context "succeeds when" $
+      it "leading string matches" $
+        runParser (stringP "hello") "hello" `shouldBe` Just ("", "hello")
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool
 functorIdProp parser input =
