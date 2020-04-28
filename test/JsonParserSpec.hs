@@ -24,6 +24,18 @@ spec = do
       property (functorIdProp $ charP 'x')
     it "fmap (f . g) == fmap f . fmap g" $
       property (functorComposeProp (charP  'x') (+1) ord)
+  describe "Applicative Parser" $ do
+    let xParser = charP 'x'
+    it "pure f <*> x = fmap f x" $
+      property (applicativeLaw1 xParser ord)
+    it "pure id <*> x = x" $
+      property (applicativeLaw2 xParser)
+    it "pure (.) <*> u <*> v <*> w = u <*> (v <*> w)" $
+      property (applicativeLaw3 (pure (+1)) (pure ord) xParser)
+    it "pure f <*> pure x = pure (f x)" $
+      property (applicativeLaw4 ord 'x')
+    it "u <*> pure y = pure ($ y) <*> u" $
+      property (applicativeLaw5 (pure ord) 'x')
 
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool
@@ -31,6 +43,25 @@ functorIdProp parser input =
   runParser (fmap id parser) input == id (runParser parser input)
 
 functorComposeProp :: (Eq c) => Parser a -> (b -> c) -> (a -> b) -> String -> Bool
-functorComposeProp parser f g input   =
-  runParser (fmap (f . g) parser) input
-    == runParser (fmap f . fmap g $ parser) input
+functorComposeProp parser f g =
+  parserEq (fmap (f . g) parser) (fmap f . fmap g $ parser)
+
+applicativeLaw1 :: (Eq b) => Parser a -> (a -> b) -> String -> Bool
+applicativeLaw1 parser f =
+  parserEq (pure f <*> parser) (fmap f parser)
+
+applicativeLaw2 :: (Eq a) => Parser a -> String -> Bool
+applicativeLaw2 parser =
+  parserEq (pure id <*> parser) parser
+
+applicativeLaw3 :: (Eq c) => Parser (b -> c) -> Parser (a -> b) -> Parser a -> String -> Bool
+applicativeLaw3 u v w = parserEq (pure (.) <*> u <*> v <*> w) (u <*> (v <*> w))
+
+applicativeLaw4 :: (Eq b) => (a -> b) -> a -> String -> Bool
+applicativeLaw4 f x = parserEq (pure f <*> pure x) (pure (f x))
+
+applicativeLaw5 :: Eq b => Parser (a -> b) -> a -> String -> Bool
+applicativeLaw5 u y = parserEq (u <*> pure y) (pure ($ y) <*> u)
+
+parserEq :: Eq a => Parser a -> Parser a -> String -> Bool
+parserEq parserA parserB input = runParser parserA input == runParser parserB input
