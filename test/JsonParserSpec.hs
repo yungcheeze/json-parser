@@ -33,4 +33,4 @@ functorIdProp parser input =
 functorComposeProp :: (Eq c) => Parser a -> (b -> c) -> (a -> b) -> String -> Bool
 functorComposeProp parser f g input   =
   runParser (fmap (f . g) parser) input
-    == runParser ((fmap f) . (fmap g) $ parser) input
+    == runParser (fmap f . fmap g $ parser) input
