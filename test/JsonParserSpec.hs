@@ -37,9 +37,20 @@ spec = do
     it "u <*> pure y = pure ($ y) <*> u" $
       property (applicativeLaw5 (pure ord) 'x')
   describe "stringP" $ do
-    context "succeeds when" $
+    context "succeeds when" $ do
       it "leading string matches" $
         runParser (stringP "hello") "hello" `shouldBe` Just ("", "hello")
+      it "leaves remaining input" $
+        runParser (stringP "hello") "helloxxx" `shouldBe` Just ("xxx", "hello")
+    context "fails when" $ do
+      it "leading string doesn't match" $
+        runParser (stringP "hello") "xxx" `shouldBe` Nothing
+      it "input empty" $
+        runParser (stringP "hello") "" `shouldBe` Nothing
+      it "incomplete match" $
+        runParser (stringP "hello") "hell" `shouldBe` Nothing
+      it "partial match" $
+        runParser (stringP "hello") "hellxxx" `shouldBe` Nothing
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool
 functorIdProp parser input =
