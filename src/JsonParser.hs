@@ -6,7 +6,7 @@ module JsonParser
   , Parser(runParser)
   )
 where
-import Data.Bifunctor (second)
+import           Data.Bifunctor                 ( second )
 data JsonValue
   = JsonNull
   | JsonNumber Int
@@ -26,7 +26,7 @@ instance Functor Parser where
 instance Applicative Parser where
   pure v = Parser $ \input -> Just (input, v)
   (Parser ff) <*> (Parser af) = Parser $ \input -> do
-    (input', f) <- ff input
+    (input' , f) <- ff input
     (input'', a) <- af input'
     return (input'', f a)
 
