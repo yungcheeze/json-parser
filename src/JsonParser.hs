@@ -3,7 +3,9 @@
 module JsonParser
   ( charP
   , stringP
+  , jsonNull
   , Parser(runParser)
+  , JsonValue(..)
   )
 where
 import           Data.Bifunctor                 ( second )
@@ -34,7 +36,7 @@ jsonValue :: Parser JsonValue
 jsonValue = undefined
 
 jsonNull :: Parser JsonValue
-jsonNull = undefined
+jsonNull = stringP "null" *> pure JsonNull
 
 jsonNumber :: Parser JsonValue
 jsonNumber = undefined

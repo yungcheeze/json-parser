@@ -51,6 +51,15 @@ spec = do
         runParser (stringP "hello") "hell" `shouldBe` Nothing
       it "partial match" $
         runParser (stringP "hello") "hellxxx" `shouldBe` Nothing
+  describe "jsonNull" $ do
+    it "parses null" $
+      runParser jsonNull "null" `shouldBe` Just ("", JsonNull)
+    it "fails if not null" $
+      runParser jsonNull "xxx" `shouldBe` Nothing
+    it "fails if input short" $
+      runParser jsonNull "nul" `shouldBe` Nothing
+
+
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool
 functorIdProp parser input =
