@@ -23,8 +23,11 @@ instance Functor Parser where
   fmap f (Parser p) = Parser $ fmap (second f) . p
 
 instance Applicative Parser where
-  pure t = undefined
-  (<*>) = undefined
+  pure v = Parser $ \input -> Just (input, v)
+  (Parser ff) <*> (Parser af) = Parser $ \input -> do
+    (input', a) <- af input
+    (input'', f) <- ff input'
+    return (input'' ,f a)
 
 jsonValue :: Parser JsonValue
 jsonValue = undefined
