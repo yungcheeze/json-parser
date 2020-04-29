@@ -6,7 +6,7 @@ import           JsonParser
 import           Test.Hspec
 import           Test.QuickCheck
 import           Data.Char
-
+import           Control.Applicative
 spec :: Spec
 spec = do
   describe "charP" $ do
@@ -36,6 +36,14 @@ spec = do
       property (applicativeLaw4 ord 'x')
     it "u <*> pure y = pure ($ y) <*> u" $
       property (applicativeLaw5 (pure ord) 'x')
+  describe "Alternative Parser" $ do
+    let xParser = charP 'x'
+    it "empty <|> u = u" $
+      property (alternativeLaw1 xParser)
+    it "u <|> empty = u" $
+      property (alternativeLaw2 xParser)
+    it "u <|> (v <|> w)  =  (u <|> v) <|> w" $
+      property (alternativeLaw3  (charP 'x') (charP 'y') (charP 'z'))
   describe "stringP" $ do
     context "succeeds when" $ do
       it "leading string matches" $
@@ -85,6 +93,15 @@ applicativeLaw4 f x = parserEq (pure f <*> pure x) (pure (f x))
 
 applicativeLaw5 :: Eq b => Parser (a -> b) -> a -> String -> Bool
 applicativeLaw5 u y = parserEq (u <*> pure y) (pure ($ y) <*> u)
+
+alternativeLaw1 :: Eq a => Parser a -> String -> Bool
+alternativeLaw1 u = parserEq (empty <|> u) u
+
+alternativeLaw2 :: Eq a => Parser a -> String -> Bool
+alternativeLaw2 u = parserEq (u <|> empty) u
+
+alternativeLaw3 :: Eq a => Parser a -> Parser a -> Parser a -> String -> Bool
+alternativeLaw3 u v w = parserEq (u <|> (v <|> w)) ((u <|> v) <|> w)
 
 parserEq :: Eq a => Parser a -> Parser a -> String -> Bool
 parserEq parserA parserB input = runParser parserA input == runParser parserB input
