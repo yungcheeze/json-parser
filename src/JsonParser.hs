@@ -45,7 +45,7 @@ jsonValue :: Parser JsonValue
 jsonValue = undefined
 
 jsonNull :: Parser JsonValue
-jsonNull = stringP "null" *> pure JsonNull
+jsonNull = stringP "null" $> JsonNull
 
 jsonBool :: Parser JsonValue
 jsonBool =  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
