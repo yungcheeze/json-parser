@@ -9,6 +9,8 @@ module JsonParser
   )
 where
 import           Data.Bifunctor                 ( second )
+import           Data.Char                      ( isNumber )
+import           Control.Applicative            ( Alternative(..) )
 data JsonValue
   = JsonNull
   | JsonNumber Int
@@ -31,6 +33,10 @@ instance Applicative Parser where
     (input' , f) <- ff input
     (input'', a) <- af input'
     return (input'', f a)
+
+instance Alternative Parser where
+  empty = Parser $ const Nothing
+  (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
 jsonValue = undefined
