@@ -66,6 +66,15 @@ spec = do
       runParser jsonNull "xxx" `shouldBe` Nothing
     it "fails if input short" $
       runParser jsonNull "nul" `shouldBe` Nothing
+  describe "jsonBool" $ do
+    it "parses true" $
+      runParser jsonBool "true" `shouldBe` Just ("", JsonBool True)
+    it "parses true and leaves remaining input" $
+      runParser jsonBool "truexxx" `shouldBe` Just ("xxx", JsonBool True)
+    it "parses false" $
+      runParser jsonBool "false" `shouldBe` Just ("", JsonBool False)
+    it "parses false and leaves remaining input" $
+      runParser jsonBool "falsexxx" `shouldBe` Just ("xxx", JsonBool False)
 
 
 

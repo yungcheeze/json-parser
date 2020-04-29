@@ -4,6 +4,7 @@ module JsonParser
   ( charP
   , stringP
   , jsonNull
+  , jsonBool
   , Parser(runParser)
   , JsonValue(..)
   )
@@ -11,8 +12,10 @@ where
 import           Data.Bifunctor                 ( second )
 import           Data.Char                      ( isNumber )
 import           Control.Applicative            ( Alternative(..) )
+import Data.Functor (($>))
 data JsonValue
   = JsonNull
+  | JsonBool Bool
   | JsonNumber Int
   | JsonString String
   | JsonList [JsonValue]
@@ -43,6 +46,9 @@ jsonValue = undefined
 
 jsonNull :: Parser JsonValue
 jsonNull = stringP "null" *> pure JsonNull
+
+jsonBool :: Parser JsonValue
+jsonBool =  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
 
 jsonNumber :: Parser JsonValue
 jsonNumber = undefined
