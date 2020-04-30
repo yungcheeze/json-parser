@@ -3,15 +3,17 @@
 module JsonParser
   ( charP
   , stringP
+  , numberP
   , jsonValue
   , Parser(runParser)
   , JsonValue(..)
   )
 where
 import           Data.Bifunctor                 ( second )
-import           Data.Char                      ( isNumber )
+import           Data.Char                      ( isDigit )
 import           Control.Applicative            ( Alternative(..) )
 import           Data.Functor                   ( ($>) )
+import           Data.Tuple                     ( swap )
 data JsonValue
   = JsonNull
   | JsonBool Bool
@@ -71,3 +73,13 @@ charP = Parser . runCharP
 
 stringP :: String -> Parser String
 stringP = traverse charP
+
+numberP :: Parser String
+numberP = predP isDigit
+
+predP :: (Char -> Bool) -> Parser String
+predP cond = Parser $ acceptIfNotEmpty . swap . span cond
+  where
+    acceptIfNotEmpty :: (String, String) -> Maybe (String, String)
+    acceptIfNotEmpty (_, "") = Nothing
+    acceptIfNotEmpty x = Just x

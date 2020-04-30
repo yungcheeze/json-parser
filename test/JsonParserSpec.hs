@@ -75,6 +75,15 @@ spec = do
       runParser jsonValue "false" `shouldBe` Just ("", JsonBool False)
     it "parses false and leaves remaining input" $
       runParser jsonValue "falsexxx" `shouldBe` Just ("xxx", JsonBool False)
+  describe "numberP" $ do
+    it "parses number" $
+      runParser numberP "123" `shouldBe` Just ("", "123")
+    it "leaves remaining input" $
+      runParser numberP "123xxx" `shouldBe` Just ("xxx", "123")
+    it "fails on non number" $
+      runParser numberP "xxx" `shouldBe` Nothing
+    it "fails on empty input" $
+      runParser numberP "" `shouldBe` Nothing
 
 
 
