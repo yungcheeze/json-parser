@@ -75,6 +75,11 @@ spec = do
       runParser jsonValue "false" `shouldBe` Just ("", JsonBool False)
     it "parses false and leaves remaining input" $
       runParser jsonValue "falsexxx" `shouldBe` Just ("xxx", JsonBool False)
+  describe "jsonNumber" $ do
+    it "parses number" $
+      runParser jsonValue "123" `shouldBe` Just ("", JsonNumber 123)
+    it "parses negative number" $
+      runParser jsonValue "-123" `shouldBe` Just ("", JsonNumber (-123))
   describe "numberP" $ do
     it "parses number" $
       runParser numberP "123" `shouldBe` Just ("", "123")
@@ -95,7 +100,6 @@ spec = do
       runParser intP "" `shouldBe` Nothing
     it "parses number prop" $
       property (\input -> (runParser intP (show input)) == Just ("",input))
-
 
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool

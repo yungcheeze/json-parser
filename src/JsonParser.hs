@@ -44,7 +44,7 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = jsonNull <|> jsonBool
+jsonValue = jsonNull <|> jsonBool <|> jsonNumber
 
 jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
@@ -54,7 +54,7 @@ jsonBool =
   stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
 
 jsonNumber :: Parser JsonValue
-jsonNumber = undefined
+jsonNumber = fmap JsonNumber intP
 
 jsonString :: Parser JsonValue
 jsonString = undefined
