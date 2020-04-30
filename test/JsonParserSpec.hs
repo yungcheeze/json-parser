@@ -84,6 +84,15 @@ spec = do
       runParser numberP "xxx" `shouldBe` Nothing
     it "fails on empty input" $
       runParser numberP "" `shouldBe` Nothing
+  describe "intP" $ do
+    it "parses number" $
+      runParser intP "123" `shouldBe` Just ("", 123)
+    it "leaves remaining input" $
+      runParser intP "123xxx" `shouldBe` Just ("xxx", 123)
+    it "fails on non number" $
+      runParser intP "xxx" `shouldBe` Nothing
+    it "fails on empty input" $
+      runParser intP "" `shouldBe` Nothing
 
 
 

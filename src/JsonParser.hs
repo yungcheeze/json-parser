@@ -4,6 +4,7 @@ module JsonParser
   ( charP
   , stringP
   , numberP
+  , intP
   , jsonValue
   , Parser(runParser)
   , JsonValue(..)
@@ -73,6 +74,9 @@ charP = Parser . runCharP
 
 stringP :: String -> Parser String
 stringP = traverse charP
+
+intP :: Parser Int
+intP = read <$> numberP
 
 numberP :: Parser String
 numberP = predP isDigit
