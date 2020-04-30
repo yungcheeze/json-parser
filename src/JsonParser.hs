@@ -76,7 +76,7 @@ stringP :: String -> Parser String
 stringP = traverse charP
 
 intP :: Parser Int
-intP = read <$> numberP
+intP = read <$> numberP <|> (stringP "-" *> fmap negate intP)
 
 numberP :: Parser String
 numberP = predP isDigit

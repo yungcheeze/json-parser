@@ -93,6 +93,8 @@ spec = do
       runParser intP "xxx" `shouldBe` Nothing
     it "fails on empty input" $
       runParser intP "" `shouldBe` Nothing
+    it "parses number prop" $
+      property (\input -> (runParser intP (show input)) == Just ("",input))
 
 
 
