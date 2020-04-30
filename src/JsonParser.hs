@@ -11,7 +11,7 @@ where
 import           Data.Bifunctor                 ( second )
 import           Data.Char                      ( isNumber )
 import           Control.Applicative            ( Alternative(..) )
-import Data.Functor (($>))
+import           Data.Functor                   ( ($>) )
 data JsonValue
   = JsonNull
   | JsonBool Bool
@@ -47,7 +47,8 @@ jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
 
 jsonBool :: Parser JsonValue
-jsonBool =  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
+jsonBool =
+  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
 
 jsonNumber :: Parser JsonValue
 jsonNumber = undefined
