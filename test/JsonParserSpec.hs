@@ -59,22 +59,22 @@ spec = do
         runParser (stringP "hello") "hell" `shouldBe` Nothing
       it "partial match" $
         runParser (stringP "hello") "hellxxx" `shouldBe` Nothing
-  describe "jsonNull" $ do
+  describe "jsonValue" $ do
     it "parses null" $
-      runParser jsonNull "null" `shouldBe` Just ("", JsonNull)
+      runParser jsonValue "null" `shouldBe` Just ("", JsonNull)
     it "fails if not null" $
-      runParser jsonNull "xxx" `shouldBe` Nothing
+      runParser jsonValue "xxx" `shouldBe` Nothing
     it "fails if input short" $
-      runParser jsonNull "nul" `shouldBe` Nothing
-  describe "jsonBool" $ do
+      runParser jsonValue "nul" `shouldBe` Nothing
+  describe "jsonValue" $ do
     it "parses true" $
-      runParser jsonBool "true" `shouldBe` Just ("", JsonBool True)
+      runParser jsonValue "true" `shouldBe` Just ("", JsonBool True)
     it "parses true and leaves remaining input" $
-      runParser jsonBool "truexxx" `shouldBe` Just ("xxx", JsonBool True)
+      runParser jsonValue "truexxx" `shouldBe` Just ("xxx", JsonBool True)
     it "parses false" $
-      runParser jsonBool "false" `shouldBe` Just ("", JsonBool False)
+      runParser jsonValue "false" `shouldBe` Just ("", JsonBool False)
     it "parses false and leaves remaining input" $
-      runParser jsonBool "falsexxx" `shouldBe` Just ("xxx", JsonBool False)
+      runParser jsonValue "falsexxx" `shouldBe` Just ("xxx", JsonBool False)
 
 
 

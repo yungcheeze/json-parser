@@ -3,8 +3,7 @@
 module JsonParser
   ( charP
   , stringP
-  , jsonNull
-  , jsonBool
+  , jsonValue
   , Parser(runParser)
   , JsonValue(..)
   )
@@ -42,7 +41,7 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = undefined
+jsonValue = jsonNull <|> jsonBool
 
 jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
