@@ -47,12 +47,11 @@ instance Alternative Parser where
 jsonValue :: Parser JsonValue
 jsonValue = jsonNull <|> jsonBool <|> jsonNumber
 
-jsonNull :: Parser JsonValue
-jsonNull = stringP "null" $> JsonNull
+jsonObject :: Parser JsonValue
+jsonObject = undefined
 
-jsonBool :: Parser JsonValue
-jsonBool =
-  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
+jsonList :: Parser JsonValue
+jsonList = undefined
 
 jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP
@@ -60,17 +59,12 @@ jsonNumber = fmap JsonNumber intP
 jsonString :: Parser JsonValue
 jsonString = undefined
 
-jsonList :: Parser JsonValue
-jsonList = undefined
+jsonBool :: Parser JsonValue
+jsonBool =
+  stringP "true" $> JsonBool True <|> stringP "false" $> JsonBool False
 
-jsonObject :: Parser JsonValue
-jsonObject = undefined
-
-charP :: Char -> Parser Char
-charP c = predP (==c)
-
-stringP :: String -> Parser String
-stringP = traverse charP
+jsonNull :: Parser JsonValue
+jsonNull = stringP "null" $> JsonNull
 
 intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> fmap negate intP)
@@ -78,10 +72,11 @@ intP = read <$> numberP <|> (stringP "-" *> fmap negate intP)
 numberP :: Parser String
 numberP = notNull (many (predP isDigit))
 
-notNull :: Parser [a] -> Parser [a]
-notNull (Parser p) = Parser $ \input -> case p input of
-  Just (_, []) -> Nothing
-  x            -> x
+stringP :: String -> Parser String
+stringP = traverse charP
+
+charP :: Char -> Parser Char
+charP c = predP (== c)
 
 predP :: (Char -> Bool) -> Parser Char
 predP f = Parser parseIfPred
@@ -92,3 +87,8 @@ predP f = Parser parseIfPred
 
 spanP :: (Char -> Bool) -> Parser String
 spanP cond = Parser $ Just . swap . span cond
+
+notNull :: Parser [a] -> Parser [a]
+notNull (Parser p) = Parser $ \input -> case p input of
+  Just (_, []) -> Nothing
+  x            -> x
