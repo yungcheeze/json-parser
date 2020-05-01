@@ -67,7 +67,7 @@ jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
 
 intP :: Parser Int
-intP = read <$> numberP <|> (stringP "-" *> fmap negate intP)
+intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
 
 numberP :: Parser String
 numberP = notNull (many (predP isDigit))
