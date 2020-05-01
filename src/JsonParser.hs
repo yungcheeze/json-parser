@@ -45,7 +45,7 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = jsonNull <|> jsonBool <|> jsonNumber
+jsonValue = jsonNull <|> jsonBool <|> jsonNumber <|> jsonString
 
 jsonObject :: Parser JsonValue
 jsonObject = undefined
@@ -57,7 +57,7 @@ jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP
 
 jsonString :: Parser JsonValue
-jsonString = undefined
+jsonString = JsonString <$> stringLiteral
 
 jsonBool :: Parser JsonValue
 jsonBool =
@@ -65,6 +65,10 @@ jsonBool =
 
 jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
+
+-- TODO handle escape sequences
+stringLiteral :: Parser String
+stringLiteral = charP '"' *> many (predP (/= '"')) <* charP '"'
 
 intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))

@@ -80,6 +80,11 @@ spec = do
       runParser jsonValue "123" `shouldBe` Just ("", JsonNumber 123)
     it "parses negative number" $
       runParser jsonValue "-123" `shouldBe` Just ("", JsonNumber (-123))
+  describe "jsonString" $ do
+    it "parses string" $
+      runParser jsonValue "\"some string\"" `shouldBe` Just ("", JsonString "some string")
+    it "leaves remaining input" $
+      runParser jsonValue "\"some\"xxx" `shouldBe` Just ("xxx", JsonString "some")
   describe "numberP" $ do
     it "parses number" $
       runParser numberP "123" `shouldBe` Just ("", "123")
