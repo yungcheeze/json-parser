@@ -76,10 +76,7 @@ intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> fmap negate intP)
 
 numberP :: Parser String
-numberP = notNull (spanP isDigit)
-
-spanP :: (Char -> Bool) -> Parser String
-spanP cond = Parser $ Just . swap . span cond
+numberP = notNull (many (predP isDigit))
 
 notNull :: Parser [a] -> Parser [a]
 notNull (Parser p) = Parser $ \input -> case p input of
@@ -92,3 +89,6 @@ predP f = Parser parseIfPred
   parseIfPred :: String -> Maybe (String, Char)
   parseIfPred (x : xs) | f x = Just (xs, x)
   parseIfPred _              = Nothing
+
+spanP :: (Char -> Bool) -> Parser String
+spanP cond = Parser $ Just . swap . span cond
