@@ -5,6 +5,7 @@ module JsonParser
   , stringP
   , numberP
   , intP
+  , predP
   , jsonValue
   , Parser(runParser)
   , JsonValue(..)
@@ -88,3 +89,10 @@ notNull :: Parser [a] -> Parser [a]
 notNull (Parser p) = Parser $ \input -> case p input of
   Just (_, []) -> Nothing
   x            -> x
+
+predP :: (Char -> Bool) -> Parser Char
+predP f = Parser parseIfPred
+ where
+  parseIfPred :: String -> Maybe (String, Char)
+  parseIfPred (x : xs) | f x = Just (xs, x)
+  parseIfPred _              = Nothing
