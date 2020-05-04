@@ -57,12 +57,6 @@ jsonList = JsonList <$> (charP '[' *> jsonSequence <* charP ']')
 jsonSequence :: Parser [JsonValue]
 jsonSequence = sepBy (charP ',') jsonValue <|> pure []
 
-surroundWs :: Parser a -> Parser a
-surroundWs p = ws *> p <* ws
-
-ws :: Parser String
-ws = many (predP isSpace)
-
 jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP
 
@@ -75,6 +69,12 @@ jsonBool =
 
 jsonNull :: Parser JsonValue
 jsonNull = stringP "null" $> JsonNull
+
+surroundWs :: Parser a -> Parser a
+surroundWs p = ws *> p <* ws
+
+ws :: Parser String
+ws = many (predP isSpace)
 
 -- TODO handle escape sequences
 stringLiteral :: Parser String
