@@ -55,7 +55,7 @@ jsonList :: Parser JsonValue
 jsonList = JsonList <$> (charP '[' *> jsonSequence <* charP ']')
 
 jsonSequence :: Parser [JsonValue]
-jsonSequence = sepBy (charP ',') jsonValue <|> pure []
+jsonSequence = sepBy (charP ',') jsonValue <|> ws $> []
 
 jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP

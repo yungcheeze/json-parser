@@ -90,6 +90,12 @@ spec = do
       runParser jsonValue "[1, \"a\", true, null]" `shouldBe` Just ("",JsonList [JsonNumber 1,JsonString "a",JsonBool True,JsonNull])
     it "parses empty list" $
       runParser jsonValue "[]" `shouldBe` Just ("", JsonList [])
+    it "handles whitespace in empty list" $
+      runParser jsonValue "[  ]" `shouldBe` Just ("", JsonList [])
+    it "handles whitespace around list" $
+      runParser jsonValue "  []  " `shouldBe` Just ("", JsonList [])
+    it "handles whitespace between elements" $
+      runParser jsonValue "[  null  ,  null  ]" `shouldBe` Just ("", JsonList [JsonNull, JsonNull])
     it "fails on incomplete list" $
       runParser jsonValue "[" `shouldBe` Nothing
     it "fails if list has invalid element" $
