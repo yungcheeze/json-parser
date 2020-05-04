@@ -46,13 +46,16 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = jsonNull <|> jsonBool <|> jsonNumber <|> jsonString
+jsonValue = jsonNull <|> jsonBool <|> jsonNumber <|> jsonString <|> jsonList
 
 jsonObject :: Parser JsonValue
 jsonObject = undefined
 
 jsonList :: Parser JsonValue
-jsonList = undefined
+jsonList = JsonList <$> (charP '[' *> jsonSequence <* charP ']')
+
+jsonSequence :: Parser [JsonValue]
+jsonSequence = sepBy (charP ',') (ws *> jsonValue <* ws) <|> pure []
 
 ws :: Parser String
 ws = many (predP isSpace)
@@ -85,6 +88,9 @@ stringP = traverse charP
 
 charP :: Char -> Parser Char
 charP c = predP (== c)
+
+sepBy :: Parser a -> Parser b -> Parser [b]
+sepBy sep element = (:) <$> element <*> many (sep *> element)
 
 predP :: (Char -> Bool) -> Parser Char
 predP f = Parser parseIfPred

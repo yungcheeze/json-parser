@@ -85,6 +85,15 @@ spec = do
       runParser jsonValue "\"some string\"" `shouldBe` Just ("", JsonString "some string")
     it "leaves remaining input" $
       runParser jsonValue "\"some\"xxx" `shouldBe` Just ("xxx", JsonString "some")
+  describe "jsonList" $ do
+    it "parses list" $
+      runParser jsonValue "[1, \"a\", true, null]" `shouldBe` Just ("",JsonList [JsonNumber 1,JsonString "a",JsonBool True,JsonNull])
+    it "parses empty list" $
+      runParser jsonValue "[]" `shouldBe` Just ("", JsonList [])
+    it "fails on incomplete list" $
+      runParser jsonValue "[" `shouldBe` Nothing
+    it "fails if list has invalid element" $
+      runParser jsonValue "[1, nulll]" `shouldBe` Nothing
   describe "numberP" $ do
     it "parses number" $
       runParser numberP "123" `shouldBe` Just ("", "123")
