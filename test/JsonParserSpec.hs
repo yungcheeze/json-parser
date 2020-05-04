@@ -112,6 +112,17 @@ spec = do
       runParser (predP isDigit) "x" `shouldBe` Nothing
     it "fails if input empty" $
       runParser (predP isDigit) "" `shouldBe` Nothing
+  describe "ws" $ do
+    it "consumes all whitespace" $
+      runParser ws "    " `shouldBe` Just ("", "    ")
+    it "consumes control characters" $
+      runParser ws "\n\t\r\f\v" `shouldBe` Just ("", "\n\t\r\f\v")
+    it "stops at first non-whitespace char" $
+      runParser ws "  x" `shouldBe` Just ("x", "  ")
+    it "doesn't fail on empty string" $
+      runParser ws "" `shouldBe` Just ("", "")
+    it "doesn't fail on string without whitespace" $
+      runParser ws "x" `shouldBe` Just ("x", "")
 
 
 functorIdProp :: (Eq a) => Parser a -> String -> Bool

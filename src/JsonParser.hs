@@ -6,13 +6,14 @@ module JsonParser
   , numberP
   , intP
   , predP
+  , ws
   , jsonValue
   , Parser(runParser)
   , JsonValue(..)
   )
 where
 import           Data.Bifunctor                 ( second )
-import           Data.Char                      ( isDigit )
+import           Data.Char                      ( isDigit, isSpace )
 import           Control.Applicative            ( Alternative(..) )
 import           Data.Functor                   ( ($>) )
 import           Data.Tuple                     ( swap )
@@ -52,6 +53,9 @@ jsonObject = undefined
 
 jsonList :: Parser JsonValue
 jsonList = undefined
+
+ws :: Parser String
+ws = many (predP isSpace)
 
 jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP
