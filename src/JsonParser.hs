@@ -127,7 +127,7 @@ doubleP = read
   zero      = stringP "0"
   digits    = predP isDigit
   concatP ps = concat <$> sequenceA ps
-
+  optionalP p = fromMaybe "" <$> optional p
 
 stringP :: String -> Parser String
 stringP = traverse charP
@@ -144,9 +144,6 @@ predP f = Parser parseIfPred
   parseIfPred :: String -> Maybe (String, Char)
   parseIfPred (x : xs) | f x = Just (xs, x)
   parseIfPred _              = Nothing
-
-optionalP :: Parser String -> Parser String
-optionalP p = fromMaybe "" <$> optional p
 
 parseFile :: FilePath -> IO (Maybe (String, JsonValue))
 parseFile fp = do
