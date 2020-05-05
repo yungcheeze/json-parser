@@ -151,13 +151,5 @@ predP f = Parser parseIfPred
   parseIfPred (x : xs) | f x = Just (xs, x)
   parseIfPred _              = Nothing
 
-spanP :: (Char -> Bool) -> Parser String
-spanP cond = Parser $ Just . swap . span cond
-
-notNull :: Parser [a] -> Parser [a]
-notNull (Parser p) = Parser $ \input -> case p input of
-  Just (_, []) -> Nothing
-  x            -> x
-
 optionalP :: Parser String -> Parser String
 optionalP p = fromMaybe "" <$> optional p
