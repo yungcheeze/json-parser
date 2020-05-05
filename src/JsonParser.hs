@@ -121,7 +121,7 @@ intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
 
 numberP :: Parser String
-numberP = notNull (many (predP isDigit))
+numberP = some (predP isDigit)
 
 stringP :: String -> Parser String
 stringP = traverse charP
