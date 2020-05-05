@@ -13,7 +13,9 @@ module JsonParser
   )
 where
 import           Data.Bifunctor                 ( second )
-import           Data.Char                      ( isDigit, isSpace )
+import           Data.Char                      ( isDigit
+                                                , isSpace
+                                                )
 import           Control.Applicative            ( Alternative(..) )
 import           Data.Functor                   ( ($>) )
 import           Data.Tuple                     ( swap )
@@ -46,13 +48,20 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = surroundWs $ jsonNull <|> jsonBool <|> jsonNumber <|> jsonString <|> jsonList <|> jsonObject
+jsonValue =
+  surroundWs
+    $   jsonNull
+    <|> jsonBool
+    <|> jsonNumber
+    <|> jsonString
+    <|> jsonList
+    <|> jsonObject
 
 jsonObject :: Parser JsonValue
 jsonObject = JsonObject <$> (charP '{' *> jsonSequence jsonPair <* charP '}')
 
 jsonPair :: Parser (String, JsonValue)
-jsonPair =  (,) <$> (surroundWs stringLiteral <* charP ':') <*> jsonValue
+jsonPair = (,) <$> (surroundWs stringLiteral <* charP ':') <*> jsonValue
 
 jsonList :: Parser JsonValue
 jsonList = JsonList <$> (charP '[' *> jsonSequence jsonValue <* charP ']')
