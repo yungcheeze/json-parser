@@ -29,7 +29,7 @@ import           Data.Maybe                     ( fromMaybe )
 data JsonValue
   = JsonNull
   | JsonBool Bool
-  | JsonNumber Int
+  | JsonNumber Double
   | JsonString String
   | JsonList [JsonValue]
   | JsonObject [(String, JsonValue)]
@@ -84,7 +84,7 @@ jsonSequence :: Parser a -> Parser [a]
 jsonSequence p = sepBy (charP ',') p <|> ws $> []
 
 jsonNumber :: Parser JsonValue
-jsonNumber = fmap JsonNumber intP
+jsonNumber = fmap JsonNumber doubleP
 
 jsonString :: Parser JsonValue
 jsonString = JsonString <$> stringLiteral
