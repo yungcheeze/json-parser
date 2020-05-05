@@ -97,7 +97,17 @@ ws = many (predP isSpace)
 
 -- TODO handle escape sequences
 stringLiteral :: Parser String
-stringLiteral = charP '"' *> many (predP (/= '"')) <* charP '"'
+stringLiteral = charP '"' *> many (escapeChars <|> predP (/= '"')) <* charP '"'
+
+escapeChars :: Parser Char
+escapeChars =
+  ('"' <$ stringP "\\\"")
+    <|> ('\\' <$ stringP "\\\\")
+    <|> ('\b' <$ stringP "\\b")
+    <|> ('\f' <$ stringP "\\f")
+    <|> ('\n' <$ stringP "\\n")
+    <|> ('\r' <$ stringP "\\r")
+    <|> ('\t' <$ stringP "\\t")
 
 intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
