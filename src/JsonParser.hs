@@ -46,19 +46,19 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
 jsonValue :: Parser JsonValue
-jsonValue = surroundWs $ jsonNull <|> jsonBool <|> jsonNumber <|> jsonString <|> jsonList
+jsonValue = surroundWs $ jsonNull <|> jsonBool <|> jsonNumber <|> jsonString <|> jsonList <|> jsonObject
 
 jsonObject :: Parser JsonValue
-jsonObject = undefined
+jsonObject = JsonObject <$> (charP '{' *> jsonSequence jsonPair <* charP '}')
 
 jsonPair :: Parser (String, JsonValue)
 jsonPair =  (,) <$> (surroundWs stringLiteral <* charP ':') <*> jsonValue
 
 jsonList :: Parser JsonValue
-jsonList = JsonList <$> (charP '[' *> jsonSequence <* charP ']')
+jsonList = JsonList <$> (charP '[' *> jsonSequence jsonValue <* charP ']')
 
-jsonSequence :: Parser [JsonValue]
-jsonSequence = sepBy (charP ',') jsonValue <|> ws $> []
+jsonSequence :: Parser a -> Parser [a]
+jsonSequence p = sepBy (charP ',') p <|> ws $> []
 
 jsonNumber :: Parser JsonValue
 jsonNumber = fmap JsonNumber intP

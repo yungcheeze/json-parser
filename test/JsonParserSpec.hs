@@ -100,6 +100,17 @@ spec = do
       runParser jsonValue "[" `shouldBe` Nothing
     it "fails if list has invalid element" $
       runParser jsonValue "[1, nulll]" `shouldBe` Nothing
+  describe "jsonObject" $ do
+    it "parses empty object" $
+      runParser jsonValue "{}" `shouldBe` Just ("", JsonObject [])
+    it "parses single value object" $
+      runParser jsonValue "{ \"a\": null }" `shouldBe` Just ("", JsonObject [("a", JsonNull)])
+    it "parses object list" $
+      runParser jsonValue "{ \"a\": null, \"b\": [] }" `shouldBe` Just ("", JsonObject [("a", JsonNull), ("b", JsonList [])])
+    it "handles whitespace" $
+      runParser jsonValue "{    }" `shouldBe` Just ("", JsonObject [])
+    it "handles whitespace between elements" $
+      runParser jsonValue "{   \"a\"     :    null   }" `shouldBe` Just ("", JsonObject [("a", JsonNull)])
   describe "numberP" $ do
     it "parses number" $
       runParser numberP "123" `shouldBe` Just ("", "123")
