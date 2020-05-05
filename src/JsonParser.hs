@@ -99,13 +99,13 @@ stringLiteral = charP '"' *> many (escapeChars <|> predP (/= '"')) <* charP '"'
 
 escapeChars :: Parser Char
 escapeChars =
-  ('"' <$ stringP "\\\"")
-    <|> ('\\' <$ stringP "\\\\")
-    <|> ('\b' <$ stringP "\\b")
-    <|> ('\f' <$ stringP "\\f")
-    <|> ('\n' <$ stringP "\\n")
-    <|> ('\r' <$ stringP "\\r")
-    <|> ('\t' <$ stringP "\\t")
+  (stringP "\\\"" $> '"')
+    <|> (stringP "\\\\" $> '\\')
+    <|> (stringP "\\b" $> '\b')
+    <|> (stringP "\\f" $> '\f')
+    <|> (stringP "\\n" $> '\n')
+    <|> (stringP "\\r" $> '\r')
+    <|> (stringP "\\t" $> '\t')
     <|> (stringP "\\u" *> unicodeLiteral)
 
 unicodeLiteral :: Parser Char
