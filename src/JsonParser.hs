@@ -47,6 +47,13 @@ instance Alternative Parser where
   empty = Parser $ const Nothing
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
 
+parseFile :: FilePath -> IO (Maybe (String, JsonValue))
+parseFile fp = do
+  input <- readFile fp
+  print input
+  putStrLn ""
+  return (runParser jsonValue input)
+
 jsonValue :: Parser JsonValue
 jsonValue =
   surroundWs
