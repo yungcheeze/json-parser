@@ -51,6 +51,9 @@ jsonValue = surroundWs $ jsonNull <|> jsonBool <|> jsonNumber <|> jsonString <|>
 jsonObject :: Parser JsonValue
 jsonObject = undefined
 
+jsonPair :: Parser (String, JsonValue)
+jsonPair =  (,) <$> (surroundWs stringLiteral <* charP ':') <*> jsonValue
+
 jsonList :: Parser JsonValue
 jsonList = JsonList <$> (charP '[' *> jsonSequence <* charP ']')
 
