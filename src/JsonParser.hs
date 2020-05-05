@@ -25,15 +25,6 @@ import           Control.Applicative            ( Alternative(..)
 import           Data.Functor                   ( ($>) )
 import           Data.Tuple                     ( swap )
 import           Data.Maybe                     ( fromMaybe )
-data JsonValue
-  = JsonNull
-  | JsonBool Bool
-  | JsonNumber Double
-  | JsonString String
-  | JsonList [JsonValue]
-  | JsonObject [(String, JsonValue)]
-  deriving (Show, Eq)
-
 
 newtype Parser a = Parser
   { runParser :: String -> Maybe (String, a)
@@ -52,6 +43,15 @@ instance Applicative Parser where
 instance Alternative Parser where
   empty = Parser $ const Nothing
   (Parser p1) <|> (Parser p2) = Parser $ \input -> p1 input <|> p2 input
+
+data JsonValue
+  = JsonNull
+  | JsonBool Bool
+  | JsonNumber Double
+  | JsonString String
+  | JsonList [JsonValue]
+  | JsonObject [(String, JsonValue)]
+  deriving (Show, Eq)
 
 jsonValue :: Parser JsonValue
 jsonValue =
