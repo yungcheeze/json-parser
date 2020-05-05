@@ -111,26 +111,6 @@ spec = do
       runParser jsonValue "{    }" `shouldBe` Just ("", JsonObject [])
     it "handles whitespace between elements" $
       runParser jsonValue "{   \"a\"     :    null   }" `shouldBe` Just ("", JsonObject [("a", JsonNull)])
-  describe "numberP" $ do
-    it "parses number" $
-      runParser numberP "123" `shouldBe` Just ("", "123")
-    it "leaves remaining input" $
-      runParser numberP "123xxx" `shouldBe` Just ("xxx", "123")
-    it "fails on non number" $
-      runParser numberP "xxx" `shouldBe` Nothing
-    it "fails on empty input" $
-      runParser numberP "" `shouldBe` Nothing
-  describe "intP" $ do
-    it "parses number" $
-      runParser intP "123" `shouldBe` Just ("", 123)
-    it "leaves remaining input" $
-      runParser intP "123xxx" `shouldBe` Just ("xxx", 123)
-    it "fails on non number" $
-      runParser intP "xxx" `shouldBe` Nothing
-    it "fails on empty input" $
-      runParser intP "" `shouldBe` Nothing
-    it "parses number prop" $
-      property (\input -> (runParser intP (show input)) == Just ("",input))
   describe "doubleP" $
     it "parses double prop" $
       property (\input -> (runParser doubleP (show input)) == Just ("",input))

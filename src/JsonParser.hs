@@ -3,8 +3,6 @@
 module JsonParser
   ( charP
   , stringP
-  , numberP
-  , intP
   , doubleP
   , predP
   , ws
@@ -103,7 +101,6 @@ surroundWs p = ws *> p <* ws
 ws :: Parser String
 ws = many (predP isSpace)
 
--- TODO handle escape sequences
 stringLiteral :: Parser String
 stringLiteral = charP '"' *> many (escapeChars <|> predP (/= '"')) <* charP '"'
 
@@ -121,12 +118,6 @@ escapeChars =
 unicodeLiteral :: Parser Char
 unicodeLiteral =
   chr . fst . head . readHex <$> sequenceA (replicate 4 (predP isHexDigit))
-
-intP :: Parser Int
-intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
-
-numberP :: Parser String
-numberP = some (predP isDigit)
 
 doubleP :: Parser Double
 doubleP = read . concat <$> sequenceA
