@@ -5,6 +5,7 @@ module JsonParser
   , stringP
   , numberP
   , intP
+  , doubleP
   , predP
   , ws
   , jsonValue

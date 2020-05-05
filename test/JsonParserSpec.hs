@@ -131,6 +131,9 @@ spec = do
       runParser intP "" `shouldBe` Nothing
     it "parses number prop" $
       property (\input -> (runParser intP (show input)) == Just ("",input))
+  describe "doubleP" $
+    it "parses double prop" $
+      property (\input -> (runParser doubleP (show input)) == Just ("",input))
   describe "predP" $ do
     it "parses if pred" $
       runParser (predP isDigit) "1" `shouldBe` Just ("", '1')
