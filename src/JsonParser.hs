@@ -17,11 +17,15 @@ import           Data.Char                      ( isDigit
                                                 , isSpace
                                                 , isHexDigit
                                                 , chr
+                                                , intToDigit
                                                 )
 import           Numeric                        ( readHex )
-import           Control.Applicative            ( Alternative(..) )
+import           Control.Applicative            ( Alternative(..)
+                                                , optional
+                                                )
 import           Data.Functor                   ( ($>) )
 import           Data.Tuple                     ( swap )
+import           Data.Maybe                     ( fromMaybe )
 data JsonValue
   = JsonNull
   | JsonBool Bool
@@ -123,6 +127,22 @@ intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
 numberP :: Parser String
 numberP = some (predP isDigit)
 
+doubleP :: Parser Double
+doubleP = read . concat <$> sequenceA
+  [optionalP minus, int, optionalP frac, optionalP exp']
+ where
+  int       = (:) <$> onetonine <*> many digits <|> zero
+  frac      = (:) <$> charP '.' <*> some digits
+  exp'      = concat <$> sequenceA [e, optionalP sign, many digits]
+  e         = stringP "e" <|> stringP "E"
+  sign      = minus <|> plus
+  minus     = stringP "-"
+  plus      = stringP "+"
+  onetonine = predP (`elem` map intToDigit [1 .. 9])
+  zero      = stringP "0"
+  digits    = predP isDigit
+
+
 stringP :: String -> Parser String
 stringP = traverse charP
 
@@ -146,3 +166,6 @@ notNull :: Parser [a] -> Parser [a]
 notNull (Parser p) = Parser $ \input -> case p input of
   Just (_, []) -> Nothing
   x            -> x
+
+optionalP :: Parser String -> Parser String
+optionalP p = fromMaybe "" <$> optional p
