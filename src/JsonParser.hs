@@ -107,10 +107,9 @@ escapeChars =
     <|> (stringP "\\r" $> '\r')
     <|> (stringP "\\t" $> '\t')
     <|> (stringP "\\u" *> unicodeLiteral)
-
-unicodeLiteral :: Parser Char
-unicodeLiteral =
-  chr . fst . head . readHex <$> sequenceA (replicate 4 (predP isHexDigit))
+ where
+  unicodeLiteral =
+    chr . fst . head . readHex <$> sequenceA (replicate 4 (predP isHexDigit))
 
 doubleP :: Parser Double
 doubleP = read
