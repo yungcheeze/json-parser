@@ -113,12 +113,12 @@ unicodeLiteral =
   chr . fst . head . readHex <$> sequenceA (replicate 4 (predP isHexDigit))
 
 doubleP :: Parser Double
-doubleP = read . concat <$> sequenceA
-  [optionalP minus, int, optionalP frac, optionalP exp']
+doubleP = read
+  <$> concatP [optionalP minus, int, optionalP frac, optionalP exp']
  where
   int       = (:) <$> onetonine <*> many digits <|> zero
   frac      = (:) <$> charP '.' <*> some digits
-  exp'      = concat <$> sequenceA [e, optionalP sign, many digits]
+  exp'      = concatP [e, optionalP sign, many digits]
   e         = stringP "e" <|> stringP "E"
   sign      = minus <|> plus
   minus     = stringP "-"
@@ -126,6 +126,7 @@ doubleP = read . concat <$> sequenceA
   onetonine = predP (`elem` map intToDigit [1 .. 9])
   zero      = stringP "0"
   digits    = predP isDigit
+  concatP ps = concat <$> sequenceA ps
 
 
 stringP :: String -> Parser String
