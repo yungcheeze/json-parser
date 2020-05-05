@@ -15,7 +15,10 @@ where
 import           Data.Bifunctor                 ( second )
 import           Data.Char                      ( isDigit
                                                 , isSpace
+                                                , isHexDigit
+                                                , chr
                                                 )
+import           Numeric                        ( readHex )
 import           Control.Applicative            ( Alternative(..) )
 import           Data.Functor                   ( ($>) )
 import           Data.Tuple                     ( swap )
@@ -108,6 +111,11 @@ escapeChars =
     <|> ('\n' <$ stringP "\\n")
     <|> ('\r' <$ stringP "\\r")
     <|> ('\t' <$ stringP "\\t")
+    <|> (stringP "\\u" *> unicodeLiteral)
+
+unicodeLiteral :: Parser Char
+unicodeLiteral =
+  chr . fst . head . readHex <$> sequenceA (replicate 4 (predP isHexDigit))
 
 intP :: Parser Int
 intP = read <$> numberP <|> (stringP "-" *> (negate <$> intP))
